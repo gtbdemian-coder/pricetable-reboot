@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>제품 목록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 600px;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>제품 목록</h1>
+
+<p>
+    <a th:href="@{/products/new}">제품 등록</a>
+</p>
+
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>아이템명</th>
+        <th>가공도</th>
+        <th>가격</th>
+        <th>수정</th>
+        <th>삭제</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr th:each="product : ${products}">
+        <td th:text="${product.id}"></td>
+        <td th:text="${product.itemName}"></td>
+        <td th:text="${product.finish}"></td>
+        <td th:text="${product.price}"></td>
+
+        <td>
+            <a th:href="@{/products/{id}/edit(id=${product.id})}" method="post">
+                수정
+            </a>
+        </td>
+
+        <td>
+            <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post">
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+</html>

@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 제품 정보를 저장하는 엔티티
  * 가격표 시스템에서 관리되는 원단 제품 정보를 나타낸다.
  */
 @Entity
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

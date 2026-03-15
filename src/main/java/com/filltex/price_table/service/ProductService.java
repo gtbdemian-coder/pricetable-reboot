@@ -44,6 +44,19 @@ public class ProductService {
     }
 
     /**
+     * 제품 수정
+     */
+    public void update(Long id, String itemName, String finish, Integer price) {
+
+        Product product = repository.findById(id).orElse(null);
+
+        if (product != null) {
+            product.update(itemName, finish, price);
+            repository.save(product);
+        }
+    }
+
+    /**
      * ID를 이용한 제품 삭제
      */
     public void delete(Long id) {

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>제품 등록 / 수정</title>
+</head>
+<body>
+<h1>제품 등록 / 수정</h1>
+
+<form th:object="${product}" method="post">
+    <div>
+        <label>아이템명</label>
+        <input type="text" th:field="*{itemName}"/>
+    </div>
+
+    <div>
+        <label>가공도</label>
+        <input type="text" th:field="*{finish}">
+    </div>
+
+    <div>
+        <label>가격</label>
+        <input type="number" th:field="*{price}">
+    </div>
+
+    <button type="submit">저장</button>
+</form>
+
+<a th:href="@{/products}">목록으로</a>
+</body>
+</html>
