@@ -1,9 +1,12 @@
 package com.filltex.price_table.controller;
 
 import com.filltex.price_table.domain.Product;
+import com.filltex.price_table.dto.ProductDto;
 import com.filltex.price_table.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -14,15 +17,6 @@ public class ProductController {
 
     public ProductController(ProductService service) {
         this.service = service;
-    }
-
-    /**
-     * 제품 등록(등록 완료 후 목록 페이지로 이동)
-     */
-    @PostMapping("/new")
-    public String createProduct(@ModelAttribute Product product) {
-        service.save(product);
-        return "redirect:/products";
     }
 
     /**
@@ -39,8 +33,22 @@ public class ProductController {
      */
     @GetMapping("/new")
     public String productForm(Model model) {
-        model.addAttribute("product", new Product());
+        model.addAttribute("product", new ProductDto());
         return "product-form";
+    }
+
+    /**
+     * 제품 등록(등록 완료 후 목록 페이지로 이동)
+     */
+    @PostMapping("/new")
+    public String createProduct(@Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "product-form";
+        }
+
+        service.save(productDto.toEntity());
+        return "redirect:/products";
     }
 
     /**
@@ -49,7 +57,15 @@ public class ProductController {
     @GetMapping("/{id}/edit")
     public String editProduct(@PathVariable Long id, Model model) {
         Product product = service.findById(id);
-        model.addAttribute("product", product);
+
+        ProductDto productDto = new ProductDto();
+        productDto.setItemName(product.getItemName());
+        productDto.setFinish(product.getFinish());
+        productDto.setPrice(product.getPrice());
+
+        model.addAttribute("product", productDto);
+        model.addAttribute("productId", id); //이 코드가 의미하는 것이 무엇인지 확인하기
+
         return "product-form";
     }
 
@@ -57,12 +73,13 @@ public class ProductController {
      * 제품 수정(수정 완료 후 목록 페이지로 이동)
      */
     @PostMapping("/{id}/edit")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute Product product) {
+    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult) {
 
-        Product findProduct = service.findById(id);
-        findProduct.update(product.getItemName(), product.getFinish(), product.getPrice());
+        if (bindingResult.hasErrors()) {
+            return "product-form";
+        }
 
-        service.save(findProduct);
+        service.update(id, productDto.getItemName(), productDto.getFinish(), productDto.getPrice());
 
         return "redirect:/products";
     }

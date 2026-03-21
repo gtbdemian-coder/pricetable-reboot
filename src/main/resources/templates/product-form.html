@@ -7,10 +7,13 @@
 <body>
 <h1>제품 등록 / 수정</h1>
 
-<form th:object="${product}" method="post">
+<form th:object="${product}"
+      th:action="@{${productId} != null ? '/products/' + ${productId} + '/edit' : '/products/new'}"
+      method="post">
     <div>
         <label>아이템명</label>
         <input type="text" th:field="*{itemName}"/>
+        <div th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}"></div>
     </div>
 
     <div>
@@ -21,7 +24,8 @@
     <div>
         <label>가격</label>
         <input type="number" th:field="*{price}">
-    </div>
+        <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+    </div>그
 
     <button type="submit">저장</button>
 </form>
