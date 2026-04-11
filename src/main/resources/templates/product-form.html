@@ -3,33 +3,120 @@
 <head>
     <meta charset="UTF-8"/>
     <title>제품 등록 / 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-bottom: 24px;
+            color: #5a4a00;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #5a4a00;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #f1e4b3;
+            border-radius: 8px;
+            background-color: #fffaf0;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #f2c94c;
+        }
+
+        .error {
+            margin-top: 6px;
+            color: #d32f2f;
+            font-size: 13px;
+        }
+
+        .button-group {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-save {
+            background-color: #f2c94c;
+            color: #333;
+        }
+
+        .btn-back {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
 <h1>제품 등록 / 수정</h1>
 
-<form th:object="${product}"
-      th:action="@{${productId} != null ? '/products/' + ${productId} + '/edit' : '/products/new'}"
-      method="post">
-    <div>
-        <label>아이템명</label>
-        <input type="text" th:field="*{itemName}"/>
-        <div th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}"></div>
-    </div>
+    <form th:object="${product}" method="post">
 
-    <div>
-        <label>가공도</label>
-        <input type="text" th:field="*{finish}">
-    </div>
+        <div class="form-group">
+            <label>아이템명</label>
+            <input type="text" th:field="*{itemName}"/>
+            <div class="error"
+                 th:if="${#fields.hasErrors('itemName')}"
+                 th:errors="*{itemName}"></div>
+        </div>
 
-    <div>
-        <label>가격</label>
-        <input type="number" th:field="*{price}">
-        <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
-    </div>그
+        <div class="form-group">
+            <label>가공도</label>
+            <input type="text" th:field="*{finish}"/>
+        </div>
 
-    <button type="submit">저장</button>
-</form>
+        <div class="form-group">
+            <label>가격</label>
+            <input type="number" step="0.01" th:field="*{price}"/>
+            <div class="error"
+                 th:if="${#fields.hasErrors('price')}"
+                 th:errors="*{price}"></div>
+        </div>
 
-<a th:href="@{/products}">목록으로</a>
+        <div class="button-group">
+            <button type="submit" class="btn btn-save">저장</button>
+            <a th:href="@{/products}" class="btn btn-back">목록</a>
+        </div>
+
+    </form>
+
+    
+</div>
 </body>
 </html>

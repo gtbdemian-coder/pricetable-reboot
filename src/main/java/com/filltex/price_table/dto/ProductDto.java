@@ -19,7 +19,7 @@ public class ProductDto {
 
     @NotNull(message = "가격은 필수입니다")
     @Min(value = 0, message = "가격은 0 이상이어야 합니다")
-    private Integer price;
+    private Double price;
 
     public Product toEntity() {
         return new Product(null, itemName, finish, price);

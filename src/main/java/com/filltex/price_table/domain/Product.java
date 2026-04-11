@@ -30,12 +30,13 @@ public class Product {
 
     @Column(nullable = false)
     /** 제품 가격 */
-    private Integer price;
+    private Double price;
 
     /**
      * 제품 정보 수정
      */
-    public void update(String itemName, String finish, Integer price) {
+    public void update(String itemName, String finish, Double price) {
+
         this.itemName = itemName;
         this.finish = finish;
         this.price = price;

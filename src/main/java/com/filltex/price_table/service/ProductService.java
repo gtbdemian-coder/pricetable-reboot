@@ -37,16 +37,17 @@ public class ProductService {
     }
 
     /**
-     * 특정한 ID를 가진 제품 조회
+     * 특정한 ID를 가진 제품 조회(*ID가 등록되어있지 않았을 경우, 예외발생)
      */
     public Product findById(Long id) {
-        return repository.findById(id).orElse(null); //orElse 물어보기
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 제품이 없습니다. id=" + id));
     }
 
     /**
      * 제품 수정
      */
-    public void update(Long id, String itemName, String finish, Integer price) {
+    public void update(Long id, String itemName, String finish, Double price) {
 
         Product product = repository.findById(id).orElse(null);
 

@@ -1,8 +1,11 @@
 package com.filltex.price_table.controller;
 
+import com.filltex.price_table.domain.Member;
+import com.filltex.price_table.domain.MemberRole;
 import com.filltex.price_table.domain.Product;
 import com.filltex.price_table.dto.ProductDto;
 import com.filltex.price_table.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,16 +35,36 @@ public class ProductController {
      * 제품 등록 페이지 조회
      */
     @GetMapping("/new")
-    public String productForm(Model model) {
+    public String productForm(HttpSession httpSession, Model model) {
+        Member loginMember = (Member) httpSession.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            return "redirect:/products";
+        }
+
+        if (loginMember.getMemberRole() != MemberRole.ADMIN) {
+            return "redirect:/products";
+        }
+
         model.addAttribute("product", new ProductDto());
         return "product-form";
+
     }
 
     /**
      * 제품 등록(등록 완료 후 목록 페이지로 이동)
      */
     @PostMapping("/new")
-    public String createProduct(@Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult) {
+    public String createProduct(@Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult, HttpSession httpSession) {
+        Member loginMember = (Member) httpSession.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            return "redirect:/products";
+        }
+
+        if (loginMember.getMemberRole() != MemberRole.ADMIN) {
+            return "redirect:/products";
+        }
 
         if (bindingResult.hasErrors()) {
             return "product-form";
