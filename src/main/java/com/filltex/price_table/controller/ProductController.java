@@ -70,7 +70,7 @@ public class ProductController {
             return "product-form";
         }
 
-        service.save(productDto.toEntity());
+        service.save(productDto.toEntity(), loginMember);
         return "redirect:/products";
     }
 
@@ -78,7 +78,14 @@ public class ProductController {
      * 제품 수정 페이지 조회(수정 완료 후 수정폼으로 이동)
      */
     @GetMapping("/{id}/edit")
-    public String editProduct(@PathVariable Long id, Model model) {
+    public String editProduct(@PathVariable Long id, Model model, HttpSession httpSession) {
+
+        Member loginMember = (Member) httpSession.getAttribute("loginMember");
+
+        if (loginMember == null || loginMember.getMemberRole() != MemberRole.ADMIN) {
+            return "redirect:/products";
+        }
+
         Product product = service.findById(id);
 
         ProductDto productDto = new ProductDto();
@@ -87,7 +94,6 @@ public class ProductController {
         productDto.setPrice(product.getPrice());
 
         model.addAttribute("product", productDto);
-        model.addAttribute("productId", id); //이 코드가 의미하는 것이 무엇인지 확인하기
 
         return "product-form";
     }
@@ -96,7 +102,13 @@ public class ProductController {
      * 제품 수정(수정 완료 후 목록 페이지로 이동)
      */
     @PostMapping("/{id}/edit")
-    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult) {
+    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult, HttpSession httpSession) {
+
+        Member loginMember = (Member) httpSession.getAttribute("loginMember");
+
+        if (loginMember == null || loginMember.getMemberRole() != MemberRole.ADMIN) {
+            return "redirect:/products";
+        }
 
         if (bindingResult.hasErrors()) {
             return "product-form";
@@ -111,7 +123,14 @@ public class ProductController {
      * 제품 삭제(삭제 완료 후 목록 페이지로 이동)
      */
     @PostMapping("/{id}/delete")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(@PathVariable Long id, HttpSession httpSession) {
+
+        Member loginMember = (Member) httpSession.getAttribute("loginMember");
+
+        if (loginMember == null || loginMember.getMemberRole() != MemberRole.ADMIN) {
+            return "redirect:/products";
+        }
+
         service.delete(id);
         return "redirect:/products";
     }
