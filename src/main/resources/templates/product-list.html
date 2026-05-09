@@ -3,20 +3,79 @@
 <head>
     <meta charset="UTF-8"/>
     <title>제품 목록</title>
+
     <style>
+
         body {
             font-family: Arial, sans-serif;
-            backgroud-color: #f8f9fa;
+            background-color: #f4f6f8;
             margin: 0;
             padding: 40px;
+        }
+
+        .header {
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn-logout {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+
+            background-color: #222;
+            color: white;
+
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background-color: #444;
+        }
+
+        .auth-link {
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background-color: #ffffff;
+
+            background-color: white;
+
             padding: 30px;
+
             border-radius: 12px;
+
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
@@ -28,16 +87,21 @@
         .top-area {
             display: flex;
             justify-content: flex-end;
+
             margin-bottom: 20px;
         }
 
         .btn {
             display: inline-block;
+
             padding: 10px 16px;
+
             border: none;
             border-radius: 8px;
+
             text-decoration: none;
             font-size: 14px;
+
             cursor: pointer;
         }
 
@@ -61,13 +125,11 @@
             border-collapse: collapse;
         }
 
-        thead {
-            background-color: #fff3b0;
-        }
-
         th, td {
             border: 1px solid #ddd;
+
             padding: 14px 12px;
+
             text-align: center;
         }
 
@@ -82,6 +144,7 @@
         .action-group {
             display: flex;
             justify-content: center;
+
             gap: 8px;
         }
 
@@ -92,72 +155,110 @@
         .empty-message {
             text-align: center;
             padding: 30px 0;
+
             color: #777;
         }
+
     </style>
 </head>
+
 <body>
 
-<div>
-    <div th:if="${session.loginMember == null}">
-        <a th:href="@{login}">로그인</a>
-        <a th:href="@{members/new}">회원가입</a>
+<header class="header">
+
+    <div class="user-area" th:if="${session.loginMember == null}">
+        <a th:href="@{/login}" class="auth-link">로그인</a>
+        <a th:href="@{/members/new}" class="auth-link">회원가입</a>
     </div>
 
-    <div th:if="${session.loginMember != null}">
-        <span th:text="${session.loginMember.name} + '님'"></span>
-        <form th:action="@{/logout}" method="post" style="display: inline">
-            <button type="submit">로그아웃</button>
+    <div class="user-area" th:if="${session.loginMember != null}">
+
+        <span class="user-name"
+              th:text="${session.loginMember.name} + '님'">
+        </span>
+
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+
+            <button type="submit" class="btn-logout">
+                로그아웃
+            </button>
+
         </form>
 
     </div>
-</div>
+
+</header>
 
 <div class="container">
-<h1>제품 목록</h1>
 
-<div class="top-area">
-    <a th:href="@{/products/new}" class="btn btn-create">제품 등록</a>
+    <h1>PRICE TABLE</h1>
+
+    <div class="top-area">
+        <a th:href="@{/products/new}" class="btn btn-create">
+            제품 등록
+        </a>
+    </div>
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>아이템명</th>
+            <th>가공도</th>
+            <th>가격</th>
+            <th>수정/삭제</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:if="${#lists.isEmpty(products)}">
+            <td colspan="5" class="empty-message">
+                등록된 제품이 없습니다.
+            </td>
+        </tr>
+
+        <tr th:each="product : ${products}">
+
+            <td th:text="${product.id}"></td>
+
+            <td th:text="${product.itemName}"></td>
+
+            <td th:text="${product.finish}"></td>
+
+            <td th:text="${product.price}"></td>
+
+            <td>
+
+                <div class="action-group">
+
+                    <a th:href="@{/products/{id}/edit(id=${product.id})}"
+                       class="btn btn-edit">
+                        수정
+                    </a>
+
+                    <form th:action="@{/products/{id}/delete(id=${product.id})}"
+                          method="post"
+                          class="delete-form">
+
+                        <button type="submit" class="btn btn-delete">
+                            삭제
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
 </div>
 
-
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>아이템명</th>
-        <th>가공도</th>
-        <th>가격</th>
-        <th>수정/삭제</th>
-    </tr>
-    </thead>
-
-    <tbody>
-
-    <tr th:if="${#lists.isEmpty(products)}">
-        <td colspan="5" class="empty-message">등록된 제품이 없습니다.</td>
-    </tr>
-
-    <tr th:each="product : ${products}">
-        <td th:text="${product.id}"></td>
-        <td th:text="${product.itemName}"></td>
-        <td th:text="${product.finish}"></td>
-        <td th:text="${product.price}"></td>
-
-        <td>
-            <div class="action-group">
-                <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-edit">수정</a>
-
-                <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" class="delete-form">
-                    <button type="submit" class="btn btn-delete">삭제</button>
-                </form>
-            </div>
-
-        </td>
-    </tr>
-    </tbody>
-</table>
-</div>
 </body>
-
 </html>
